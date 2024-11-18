@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: POSITION-SERVICE
+server:
+  port: 0
