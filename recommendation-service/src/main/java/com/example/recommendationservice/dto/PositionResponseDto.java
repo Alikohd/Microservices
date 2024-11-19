@@ -1,4 +1,4 @@
 package com.example.recommendationservice.dto;
 
-public record PositionResponseDto(int id, String position) {
+public record PositionResponseDto(int id, String positionName) {
 }

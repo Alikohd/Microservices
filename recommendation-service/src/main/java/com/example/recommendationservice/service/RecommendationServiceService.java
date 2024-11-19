@@ -5,41 +5,31 @@ import com.example.recommendationservice.client.PositionServiceClient;
 import com.example.recommendationservice.dto.CompanyResponseDto;
 import com.example.recommendationservice.dto.PositionResponseDto;
 import com.example.recommendationservice.dto.RecommendationDto;
-import com.example.recommendationservice.dto.RecommendationEntity;
+import com.example.recommendationservice.entity.Recommendation;
+import com.example.recommendationservice.repository.RecommendationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class RecommendationServiceService {
     private final CompanyServiceClient companyServiceClient;
     private final PositionServiceClient positionServiceClient;
+    private final RecommendationRepository recommendationRepository;
 
     private CompanyResponseDto getCompanyInfo(int id) {
-        CompanyResponseDto companyDto = companyServiceClient.getCompanyInfo(getRecommendationTable().get(id).companyId());
-        return companyDto;
+        return companyServiceClient.getCompanyInfo(id);
     }
 
     private PositionResponseDto getPositionInfo(int id) {
-        PositionResponseDto positionDto = positionServiceClient.getPositionInfo(getRecommendationTable().get(id).positionId());
-        return positionDto;
+        return positionServiceClient.getPositionInfo(id);
     }
-
 
     public RecommendationDto getRecommendation(int id) {
-        RecommendationEntity recommendationEntity = getRecommendationTable().get(id);
-        return new RecommendationDto(id, recommendationEntity.fullName(), getCompanyInfo(id).company(), getPositionInfo(id).position(), recommendationEntity.recommendation());
+        Recommendation recommendationEntity = recommendationRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return new RecommendationDto(id, recommendationEntity.getFullname(), getCompanyInfo(id).companyName(), getPositionInfo(id).positionName(), recommendationEntity.getRecommendation());
     }
-
-    private Map<Integer, RecommendationEntity> getRecommendationTable() {
-        Map<Integer, RecommendationEntity> recommendationTable = new HashMap<>();
-        recommendationTable.put(1, new RecommendationEntity(1, "Ivan Ivanov", 1, 1, "Very responsible employee"));
-        recommendationTable.put(2, new RecommendationEntity(2, "Aleksei Petrov", 2, 2, "Hardworking employee"));
-        recommendationTable.put(3, new RecommendationEntity(3, "Alex Van", 3, 3, "Experienced employee"));
-        return recommendationTable;
-    }
-
 }

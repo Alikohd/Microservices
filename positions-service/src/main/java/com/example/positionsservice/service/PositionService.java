@@ -1,22 +1,21 @@
 package com.example.positionsservice.service;
 
 import com.example.positionsservice.dto.PositionResponseDto;
+import com.example.positionsservice.entity.Position;
+import com.example.positionsservice.repository.PositionRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@RequiredArgsConstructor
 public class PositionService {
-    public PositionResponseDto getPosition(int id) {
-        return getPositionTable().get(id);
-    }
+    private final PositionRepository positionRepository;
 
-    private Map<Integer, PositionResponseDto> getPositionTable() {
-        Map<Integer, PositionResponseDto> map = new HashMap<>();
-        map.put(1, new PositionResponseDto(1, "Project Manager"));
-        map.put(2, new PositionResponseDto(2, "Business Analyst"));
-        map.put(3, new PositionResponseDto(3, "Java programmer"));
-        return map;
+    public PositionResponseDto getPosition(int id) {
+        Position position = positionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return new PositionResponseDto(position.getId(), position.getName());
     }
 }

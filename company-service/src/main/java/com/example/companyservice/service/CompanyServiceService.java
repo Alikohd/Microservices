@@ -1,24 +1,20 @@
 package com.example.companyservice.service;
 
 import com.example.companyservice.dto.CompanyResponseDto;
+import com.example.companyservice.entity.Company;
+import com.example.companyservice.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyServiceService {
+    private final CompanyRepository companyRepository;
     public CompanyResponseDto getCompany(int id) {
-        return getCompanyTable().get(id);
-    }
-
-    private Map<Integer, CompanyResponseDto> getCompanyTable() {
-        Map<Integer, CompanyResponseDto> companyTable = new HashMap<>();
-        companyTable.put(1, new CompanyResponseDto(1, "Amazon"));
-        companyTable.put(2, new CompanyResponseDto(2, "Google"));
-        companyTable.put(3, new CompanyResponseDto(3, "Microsoft"));
-        return companyTable;
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return new CompanyResponseDto(id, company.getName());
     }
 }

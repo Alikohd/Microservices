@@ -1,0 +1,1 @@
+INSERT INTO position (name) VALUES ('Project Manager'), ('Business Analyst'), ('Java programmer')
