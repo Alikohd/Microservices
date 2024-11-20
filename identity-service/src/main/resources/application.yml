@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: identity-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5555/postgres
+    username: ${DB_NAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+jwt:
+  secret:
+    access: ${JWT_ACCESS_SECRET}
+    accessLifetime: 30m
+
+server:
+  port: 0

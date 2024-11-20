@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: company-service
+          uri: lb://COMPANY-SERVICE
+          predicates:
+            - Path=/company/**
+          filters:
+            - AuthFilter
+
+        - id: position-service
+          uri: lb://POSITION-SERVICE
+          predicates:
+            - Path=/position/**
+          filters:
+            - AuthFilter
+
+        - id: recommendation-service
+          uri: lb://RECOMMENDATION-SERVICE
+          predicates:
+            - Path=/recommendation/**
+          filters:
+            - AuthFilter
+
+        - id: identity-service
+          uri: lb://IDENTITY-SERVICE
+          predicates:
+            - Path=/auth/**
+          filters:
+            - AuthFilter
+      discovery:
+        locator:
+          lower-case-service-id: true
+server:
+  port: 8000
